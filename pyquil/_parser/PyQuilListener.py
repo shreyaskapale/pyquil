@@ -29,7 +29,7 @@ from numpy.ma import sin, cos, sqrt, exp
 from pyquil import parameters
 from pyquil.gates import QUANTUM_GATES
 from pyquil.parameters import Parameter
-from pyquil.quilatom import MemoryReference, Addr
+from pyquil.quilatom import MemoryReference, Addr, Waveform
 from pyquil.quilbase import (Gate, DefGate, DefPermutationGate, Measurement, JumpTarget, Label, Expression,
                              Nop, Halt, Jump, JumpWhen, JumpUnless, Reset, Wait,
                              ClassicalNot, ClassicalNeg, ClassicalAnd, ClassicalInclusiveOr,
@@ -41,7 +41,10 @@ from pyquil.quilbase import (Gate, DefGate, DefPermutationGate, Measurement, Jum
                              ClassicalLessThan, ClassicalAdd, ClassicalSub, ClassicalMul,
                              ClassicalDiv,
                              RawInstr, Qubit, Pragma, Declare, AbstractInstruction,
-                             ClassicalTrue, ClassicalFalse, ClassicalOr, ResetQubit)
+                             ClassicalTrue, ClassicalFalse, ClassicalOr, ResetQubit,
+                             Pulse, SetFrequency, SetPhase, ShiftPhase, SwapPhases, SetScale,
+                             Capture, RawCapture, DefCalibration, DefMeasureCalibration, DefWaveform,
+                             Delay, Fence)
 from .gen3.QuilLexer import QuilLexer
 from .gen3.QuilListener import QuilListener
 from .gen3.QuilParser import QuilParser
@@ -368,11 +371,111 @@ class PyQuilListener(QuilListener):
         self.result.append(Declare(name, memory_type, memory_size,
                                    shared_region=shared_region, offsets=offsets))
 
+    def enterDefCalibration(self, ctx:QuilParser.DefCalibrationContext):
+        self.previous_result = self.result
+        self.result = []
+
+    def exitDefCalibration(self, ctx:QuilParser.DefCalibrationContext):
+        name = ctx.name().getText()
+        parameters = map(_param, ctx.param())
+        qubits = map(_formal_qubit, ctx.formalQubit())
+        instrs = self.result
+
+        self.result = self.previous_result
+        self.previous_result = None
+        self.result.append(DefCalibration(name, parameters, qubits, instrs))
+
+    def enterDefMeasCalibration(self, ctx:QuilParser.DefMeasCalibrationContext):
+        self.previous_result = self.result
+        self.result = []
+
+    def exitDefMeasCalibration(self, ctx:QuilParser.DefMeasCalibrationContext):
+        parameter = _param(ctx.param())
+        qubit = _formal_qubit(ctx.formalQubit())
+        instrs = self.result
+
+        self.result = self.previous_result
+        self.previous_result = None
+        self.result.append(DefMeasureCalibration(qubit, parameter, instrs))
+
+    def exitDefWaveform(self, ctx:QuilParser.DefWaveformContext):
+        name = ctx.name().getText()
+        parameters = [param.getText() for param in ctx.param()]
+        entries = sum(_matrix(ctx.matrix()), [])
+        self.result.append(DefWaveform(name, parameters, entries))
+
+    def exitPulse(self, ctx:QuilParser.PulseContext):
+        qubits = map(_formal_qubit, ctx.formalQubit())
+        frame = ctx.frame().getText()
+        waveform = _waveform(ctx.waveform())
+        self.result.append(Pulse(qubits, frame, waveform))
+
+    def exitSetFrequency(self, ctx:QuilParser.SetFrequencyContext):
+        qubits = map(_formal_qubit, ctx.formalQubit())
+        frame = ctx.frame().getText()
+        freq = _expression(ctx.expression())
+        self.result.append(SetFrequency(qubits, frame, freq))
+
+    def exitSetPhase(self, ctx:QuilParser.SetPhaseContext):
+        qubits = map(_formal_qubit, ctx.formalQubit())
+        frame = ctx.frame().getText()
+        phase = _expression(ctx.expression())
+        self.result.append(SetPhase(qubits, frame, phase))
+
+    def exitShiftPhase(self, ctx:QuilParser.ShiftPhaseContext):
+        qubits = map(_formal_qubit, ctx.formalQubit())
+        frame = ctx.frame().getText()
+        phase = _expression(ctx.expression())
+        self.result.append(ShiftPhase(qubits, frame, phase))
+
+    def exitSwapPhases(self, ctx:QuilParser.SwapPhasesContext):
+        all_qubits = list(map(_formal_qubit, ctx.formalQubit()))
+        qubit_count = len(all_qubits)
+        frameA = ctx.frame(0).getText()
+        frameB = ctx.frame(1).getText()
+        self.result.append(SwapPhases(all_qubits[:qubit_count/2], frameA,
+                                      all_qubits[qubit_count/2:], frameB))
+
+    def exitSetScale(self, ctx:QuilParser.SetScaleContext):
+        qubits = map(_formal_qubit, ctx.formalQubit())
+        frame = ctx.frame().getText()
+        scale = _expression(ctx.expression())
+        self.result.append(SetScale(qubits, frame, scale))
+
+    def exitCapture(self, ctx:QuilParser.CaptureContext):
+        qubit = _formal_qubit(ctx.formalQubit())
+        frame = ctx.frame().getText()
+        waveform = _waveform(ctx.waveform())
+        memory_region = _addr(ctx.addr())
+        self.result.append(Capture(qubit, frame, waveform, memory_region))
+
+    def exitRawCapture(self, ctx:QuilParser.RawCaptureContext):
+        qubit = _formal_qubit(ctx.formalQubit())
+        frame = ctx.frame().getText()
+        duration = _expression(ctx.expression())
+        memory_region = _addr(ctx.addr())
+        self.result.append(RawCapture(qubit, frame, duration, memory_region))
+
+    def exitDelay(self, ctx:QuilParser.DelayContext):
+        qubit = _formal_qubit(ctx.formalQubit())
+        duration = _expression(ctx.expression())
+        self.result.append(Delay(qubit, duration))
+
+    def exitFence(self, ctx:QuilParser.FenceContext):
+        qubits = map(_formal_qubit, ctx.formalQubit())
+        self.result.append(Fence(qubits))
+
 
 """
 Helper functions for converting from ANTLR internals to PyQuil objects
 """
 
+
+def _formal_qubit(formal_qubit):
+    if isinstance(formal_qubit, QuilParser.QubitContext):
+        return _qubit(formal_qubit)
+    else:
+        return formal_qubit.getText()
 
 def _qubit(qubit):
     # type: (QuilParser.QubitContext) -> Qubit
@@ -461,6 +564,14 @@ def _expression(expression):
     raise RuntimeError("Unexpected expression type:" + expression.getText())
 
 
+def _named_parameters(params):
+    ret = dict()
+    for param in params:
+        name = param.colonTerminatedName().getText()[:-1]
+        expr = _expression(param.expression())
+        ret[name] = expr
+
+
 def _binary_exp(expression, op):
     # type: (QuilParser.ExpressionContext, Callable) -> Number
     """
@@ -526,3 +637,8 @@ def _real(real):
 
 def _sign(real):
     return -1 if real.MINUS() else 1
+
+
+def _waveform(wf):
+    # type: (QuilParser.WaveformContext) -> Waveform
+    return Waveform(wf.name().getText(), map(_named_parameters, wf.namedParam()))

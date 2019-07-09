@@ -984,7 +984,7 @@ def get_classical_addresses_from_program(program) -> Dict[str, List[int]]:
 
 def percolate_declares(program: Program) -> Program:
     """
-    Move all the DECLARE statements to the top of the program. Return a fresh obejct.
+    Move all the DECLARE statements to the top of the program. Return a fresh object.
 
     :param program: Perhaps jumbled program.
     :return: Program with DECLAREs all at the top and otherwise the same sorted contents.

@@ -557,3 +557,165 @@ class QuilListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by QuilParser#defWaveform.
+    def enterDefWaveform(self, ctx:QuilParser.DefWaveformContext):
+        pass
+
+    # Exit a parse tree produced by QuilParser#defWaveform.
+    def exitDefWaveform(self, ctx:QuilParser.DefWaveformContext):
+        pass
+
+
+    # Enter a parse tree produced by QuilParser#pulse.
+    def enterPulse(self, ctx:QuilParser.PulseContext):
+        pass
+
+    # Exit a parse tree produced by QuilParser#pulse.
+    def exitPulse(self, ctx:QuilParser.PulseContext):
+        pass
+
+
+    # Enter a parse tree produced by QuilParser#setFrequency.
+    def enterSetFrequency(self, ctx:QuilParser.SetFrequencyContext):
+        pass
+
+    # Exit a parse tree produced by QuilParser#setFrequency.
+    def exitSetFrequency(self, ctx:QuilParser.SetFrequencyContext):
+        pass
+
+
+    # Enter a parse tree produced by QuilParser#setPhase.
+    def enterSetPhase(self, ctx:QuilParser.SetPhaseContext):
+        pass
+
+    # Exit a parse tree produced by QuilParser#setPhase.
+    def exitSetPhase(self, ctx:QuilParser.SetPhaseContext):
+        pass
+
+
+    # Enter a parse tree produced by QuilParser#shiftPhase.
+    def enterShiftPhase(self, ctx:QuilParser.ShiftPhaseContext):
+        pass
+
+    # Exit a parse tree produced by QuilParser#shiftPhase.
+    def exitShiftPhase(self, ctx:QuilParser.ShiftPhaseContext):
+        pass
+
+
+    # Enter a parse tree produced by QuilParser#swapPhases.
+    def enterSwapPhases(self, ctx:QuilParser.SwapPhasesContext):
+        pass
+
+    # Exit a parse tree produced by QuilParser#swapPhases.
+    def exitSwapPhases(self, ctx:QuilParser.SwapPhasesContext):
+        pass
+
+
+    # Enter a parse tree produced by QuilParser#setScale.
+    def enterSetScale(self, ctx:QuilParser.SetScaleContext):
+        pass
+
+    # Exit a parse tree produced by QuilParser#setScale.
+    def exitSetScale(self, ctx:QuilParser.SetScaleContext):
+        pass
+
+
+    # Enter a parse tree produced by QuilParser#capture.
+    def enterCapture(self, ctx:QuilParser.CaptureContext):
+        pass
+
+    # Exit a parse tree produced by QuilParser#capture.
+    def exitCapture(self, ctx:QuilParser.CaptureContext):
+        pass
+
+
+    # Enter a parse tree produced by QuilParser#rawCapture.
+    def enterRawCapture(self, ctx:QuilParser.RawCaptureContext):
+        pass
+
+    # Exit a parse tree produced by QuilParser#rawCapture.
+    def exitRawCapture(self, ctx:QuilParser.RawCaptureContext):
+        pass
+
+
+    # Enter a parse tree produced by QuilParser#defCalibration.
+    def enterDefCalibration(self, ctx:QuilParser.DefCalibrationContext):
+        pass
+
+    # Exit a parse tree produced by QuilParser#defCalibration.
+    def exitDefCalibration(self, ctx:QuilParser.DefCalibrationContext):
+        pass
+
+
+    # Enter a parse tree produced by QuilParser#defMeasCalibration.
+    def enterDefMeasCalibration(self, ctx:QuilParser.DefMeasCalibrationContext):
+        pass
+
+    # Exit a parse tree produced by QuilParser#defMeasCalibration.
+    def exitDefMeasCalibration(self, ctx:QuilParser.DefMeasCalibrationContext):
+        pass
+
+
+    # Enter a parse tree produced by QuilParser#delay.
+    def enterDelay(self, ctx:QuilParser.DelayContext):
+        pass
+
+    # Exit a parse tree produced by QuilParser#delay.
+    def exitDelay(self, ctx:QuilParser.DelayContext):
+        pass
+
+
+    # Enter a parse tree produced by QuilParser#fence.
+    def enterFence(self, ctx:QuilParser.FenceContext):
+        pass
+
+    # Exit a parse tree produced by QuilParser#fence.
+    def exitFence(self, ctx:QuilParser.FenceContext):
+        pass
+
+
+    # Enter a parse tree produced by QuilParser#formalQubit.
+    def enterFormalQubit(self, ctx:QuilParser.FormalQubitContext):
+        pass
+
+    # Exit a parse tree produced by QuilParser#formalQubit.
+    def exitFormalQubit(self, ctx:QuilParser.FormalQubitContext):
+        pass
+
+
+    # Enter a parse tree produced by QuilParser#namedParam.
+    def enterNamedParam(self, ctx:QuilParser.NamedParamContext):
+        pass
+
+    # Exit a parse tree produced by QuilParser#namedParam.
+    def exitNamedParam(self, ctx:QuilParser.NamedParamContext):
+        pass
+
+
+    # Enter a parse tree produced by QuilParser#frame.
+    def enterFrame(self, ctx:QuilParser.FrameContext):
+        pass
+
+    # Exit a parse tree produced by QuilParser#frame.
+    def exitFrame(self, ctx:QuilParser.FrameContext):
+        pass
+
+
+    # Enter a parse tree produced by QuilParser#waveform.
+    def enterWaveform(self, ctx:QuilParser.WaveformContext):
+        pass
+
+    # Exit a parse tree produced by QuilParser#waveform.
+    def exitWaveform(self, ctx:QuilParser.WaveformContext):
+        pass
+
+
+    # Enter a parse tree produced by QuilParser#colonTerminatedName.
+    def enterColonTerminatedName(self, ctx:QuilParser.ColonTerminatedNameContext):
+        pass
+
+    # Exit a parse tree produced by QuilParser#colonTerminatedName.
+    def exitColonTerminatedName(self, ctx:QuilParser.ColonTerminatedNameContext):
+        pass
+
+

@@ -859,3 +859,95 @@ class RawInstr(AbstractInstruction):
 
     def __repr__(self):
         return '<RawInstr {}>'.format(self.instr)
+
+
+class Pulse(AbstractInstruction):
+    def __init__(self, qubits, frame, waveform):
+        self.qubits = qubits
+        self.frame = frame
+        self.waveform = waveform
+
+
+class SetFrequency(AbstractInstruction):
+    def __init__(self, qubits, frame, freq):
+        self.qubits = qubits
+        self.frame = frame
+        self.freq = freq
+
+
+class SetPhase(AbstractInstruction):
+    def __init__(self, qubits, frame, phase):
+        self.qubits = qubits
+        self.frame = frame
+        self.phase = phase
+
+
+class ShiftPhase(AbstractInstruction):
+    def __init__(self, qubits, frame, phase):
+        self.qubits = qubits
+        self.frame = frame
+        self.phase = phase
+
+
+class SwapPhases(AbstractInstruction):
+    def __init__(self, qubitsA, frameA, qubitsB, frameB):
+        self.qubitsA = qubitsA
+        self.qubitsB = qubitsB
+        self.frameA = frameA
+        self.frameB = frameB
+
+
+class SetScale(AbstractInstruction):
+    def __init__(self, qubits, frame, scale):
+        self.qubits = qubits
+        self.frame = frame
+        self.scale = scale
+
+
+class Capture(AbstractInstruction):
+    def __init__(self, qubit, frame, waveform, memory_region):
+        self.qubit = qubit
+        self.frame = frame
+        self.waveform = waveform
+        self.memory_region = memory_region
+
+
+class RawCapture(AbstractInstruction):
+    def __init__(self, qubit, frame, duration, memory_region):
+        self.qubit = qubit
+        self.frame = frame
+        self.duration = duration
+        self.memory_region = memory_region
+
+
+class Delay(AbstractInstruction):
+    def __init__(self, qubit, duration):
+        self.qubit = qubit
+        self.duration = duration
+
+
+class Fence(AbstractInstruction):
+    def __init__(self, qubits):
+        self.qubits = qubits
+
+
+class DefWaveform(AbstractInstruction):
+    def __init__(self, name, parameters, entries):
+        self.name = name
+        self.parameters = parameters
+        self.entries = entries
+
+
+class DefCalibration(AbstractInstruction):
+    def __init__(self, name, parameters, qubits, instrs):
+        self.name = name
+        self.parameters = parameters
+        self.qubits = qubits
+        self.instrs = instrs
+
+
+class DefMeasureCalibration(AbstractInstruction):
+    def __init__(self, qubit, parameter, instrs):
+        self.qubit = qubit
+        self.parameter = parameter
+        self.instrs = instrs

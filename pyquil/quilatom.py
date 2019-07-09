@@ -629,3 +629,16 @@ class Addr(MemoryReference):
         if not isinstance(value, integer_types) or value < 0:
             raise TypeError("Addr value must be a non-negative int")
         super(Addr, self).__init__("ro", offset=value, declared_size=None)
+
+
+class Waveform(QuilAtom):
+    """
+    Representation of a Waveform reference.
+
+    :param name: Name of the waveform definition.
+    :param params: List of numerical parameters to supply to the waveform definition.
+    """
+
+    def __init__(self, name, params):
+        self.name = name
+        self.params = params

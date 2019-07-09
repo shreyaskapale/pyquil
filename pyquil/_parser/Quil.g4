@@ -8,10 +8,15 @@ quil                : allInstr? ( NEWLINE+ allInstr )* NEWLINE* EOF ;
 
 allInstr            : defGate
                     | defCircuit
+                    | defWaveform
+                    | defCalibration
+                    | defMeasCalibration
                     | instr
                     ;
 
-instr               : gate
+instr               : fence
+                    | delay
+                    | gate
                     | measure
                     | defLabel
                     | halt
@@ -28,7 +33,15 @@ instr               : gate
                     | nop
                     | include
                     | pragma
-                    | memoryDescriptor
+                    | pulse
+                    | setFrequency
+                    | setPhase
+                    | shiftPhase
+                    | swapPhases
+                    | setScale
+                    | capture
+                    | rawCapture
+                    | memoryDescriptor // this is a little unusual, but it's in steven's example
                     ;
 
 // C. Static and Parametric Gates
@@ -141,6 +154,31 @@ number              : MINUS? ( realN | imaginaryN | I | PI ) ;
 imaginaryN          : realN I ;
 realN               : FLOAT | INT ;
 
+// Analog control
+
+defWaveform         : DEFWAVEFORM name ( LPAREN param (COMMA param)* RPAREN )? COLON NEWLINE matrix ;
+pulse               : PULSE formalQubit+ frame waveform ;
+setFrequency        : SETFREQUENCY formalQubit+ frame expression ;
+setPhase            : SETPHASE formalQubit+ frame expression ;
+shiftPhase          : SHIFTPHASE formalQubit+ frame expression ;
+swapPhases          : SWAPPHASES formalQubit+ frame qubit+ frame ;
+setScale            : SETSCALE formalQubit+ frame expression ;
+capture             : CAPTURE formalQubit frame waveform addr ;
+rawCapture          : RAWCAPTURE formalQubit+ frame expression addr ;
+defCalibration      : DEFCAL name (LPAREN param ( COMMA param )* RPAREN)? formalQubit+ COLON ( NEWLINE TAB instr )* ;
+defMeasCalibration  : DEFCAL MEASURE formalQubit param COLON ( NEWLINE TAB instr )* ;
+delay               : DELAY formalQubit expression ;
+fence               : FENCE formalQubit+ ;
+
+formalQubit         : qubit | qubitVariable ;
+namedParam          : colonTerminatedName expression ;
+frame               : STRING ;
+waveform            : name (LPAREN namedParam ( COMMA namedParam )* RPAREN)? ;
+colonTerminatedName : COLONTERMIDENT ;
+// built-in waveform types include: "flat", "gaussian", "draggaussian", "erfsquare"
+// TODO: parameters might be named.
+
+
 ////////////////////
 // LEXER
 ////////////////////
@@ -216,6 +254,21 @@ TIMES               : '*' ;
 DIVIDE              : '/' ;
 POWER               : '^' ;
 
+// analog keywords
+
+DEFWAVEFORM         : 'DEFWAVEFORM' ;
+PULSE               : 'PULSE ';
+SETFREQUENCY        : 'SET-FREQUENCY' ;
+SETPHASE            : 'SET-PHASE' ;
+SHIFTPHASE          : 'SHIFT-PHASE' ;
+SWAPPHASES          : 'SWAP-PHASES' ;
+SETSCALE            : 'SET-SCALE' ;
+CAPTURE             : 'CAPTURE' ;
+RAWCAPTURE          : 'RAW-CAPTURE' ;
+DEFCAL              : 'DEFCAL' ;
+DELAY               : 'DELAY' ;
+FENCE               : 'FENCE' ;
+
 // Modifiers
 
 CONTROLLED          : 'CONTROLLED' ;
@@ -224,6 +277,7 @@ DAGGER              : 'DAGGER' ;
 // Identifiers
 
 IDENTIFIER          : ( ( [A-Za-z_] ) | ( [A-Za-z_] [A-Za-z0-9\-_]* [A-Za-z0-9_] ) ) ;
+COLONTERMIDENT      : IDENTIFIER ':' ;
 
 // Numbers
 
