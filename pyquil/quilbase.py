@@ -958,9 +958,30 @@ class DefCalibration(AbstractInstruction):
         self.qubits = qubits
         self.instrs = instrs
 
+    def out(self):
+        ret = f"DEFCAL {self.name}"
+        if len(self.parameters) > 0:
+            first_param, *rest = self.parameters
+            ret += f"({first_param}"
+            for param in rest:
+                ret += f", {param}"
+            ret += ")"
+        for qubit in self.qubits:
+            ret += f" {qubit}"
+        ret += ":\n"
+        for instr in self.instrs:
+            ret += f"    {instr.out()}\n"
+        return ret
+
 
 class DefMeasureCalibration(AbstractInstruction):
     def __init__(self, qubit, memory_reference, instrs):
         self.qubit = qubit
         self.memory_reference = memory_reference
         self.instrs = instrs
+
+    def out(self):
+        ret = f"DEFCAL MEASURE {self.qubit} {self.memory_reference}:\n"
+        for instr in self.instrs:
+            ret += f"    {instr.out()}\n"
+        return ret
