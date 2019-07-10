@@ -377,8 +377,8 @@ class PyQuilListener(QuilListener):
 
     def exitDefCalibration(self, ctx:QuilParser.DefCalibrationContext):
         name = ctx.name().getText()
-        parameters = map(_param, ctx.param())
-        qubits = map(_formal_qubit, ctx.formalQubit())
+        parameters = list(map(_param, ctx.param()))
+        qubits = list(map(_formal_qubit, ctx.formalQubit()))
         instrs = self.result
 
         self.result = self.previous_result
@@ -390,13 +390,13 @@ class PyQuilListener(QuilListener):
         self.result = []
 
     def exitDefMeasCalibration(self, ctx:QuilParser.DefMeasCalibrationContext):
-        parameter = _param(ctx.param())
+        memory_reference = _addr(ctx.addr())
         qubit = _formal_qubit(ctx.formalQubit())
         instrs = self.result
 
         self.result = self.previous_result
         self.previous_result = None
-        self.result.append(DefMeasureCalibration(qubit, parameter, instrs))
+        self.result.append(DefMeasureCalibration(qubit, memory_reference, instrs))
 
     def exitDefWaveform(self, ctx:QuilParser.DefWaveformContext):
         name = ctx.name().getText()
@@ -423,7 +423,7 @@ class PyQuilListener(QuilListener):
         self.result.append(SetPhase(qubits, frame, phase))
 
     def exitShiftPhase(self, ctx:QuilParser.ShiftPhaseContext):
-        qubits = map(_formal_qubit, ctx.formalQubit())
+        qubits = list(map(_formal_qubit, ctx.formalQubit()))
         frame = ctx.frame().getText()
         phase = _expression(ctx.expression())
         self.result.append(ShiftPhase(qubits, frame, phase))

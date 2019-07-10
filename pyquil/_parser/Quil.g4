@@ -166,7 +166,7 @@ setScale            : SETSCALE formalQubit+ frame expression ;
 capture             : CAPTURE formalQubit frame waveform addr ;
 rawCapture          : RAWCAPTURE formalQubit+ frame expression addr ;
 defCalibration      : DEFCAL name (LPAREN param ( COMMA param )* RPAREN)? formalQubit+ COLON ( NEWLINE TAB instr )* ;
-defMeasCalibration  : DEFCAL MEASURE formalQubit param COLON ( NEWLINE TAB instr )* ;
+defMeasCalibration  : DEFCAL MEASURE formalQubit addr COLON ( NEWLINE TAB instr )* ;
 delay               : DELAY formalQubit expression ;
 fence               : FENCE formalQubit+ ;
 

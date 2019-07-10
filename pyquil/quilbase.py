@@ -867,6 +867,13 @@ class Pulse(AbstractInstruction):
         self.frame = frame
         self.waveform = waveform
 
+    def out(self):
+        ret = "PULSE "
+        for qubit in self.qubits:
+            ret += f"{qubit} "
+        ret += f'"{self.frame} {self.waveform.out()}"'
+        return ret
+
 
 class SetFrequency(AbstractInstruction):
     def __init__(self, qubits, frame, freq):
@@ -887,6 +894,12 @@ class ShiftPhase(AbstractInstruction):
         self.qubits = qubits
         self.frame = frame
         self.phase = phase
+
+    def out(self):
+        ret = "SHIFT-PHASE "
+        for qubit in self.qubits:
+            ret += f"{qubit} "
+        return ret + f"{self.frame} {self.phase}"
 
 
 class SwapPhases(AbstractInstruction):
@@ -947,7 +960,7 @@ class DefCalibration(AbstractInstruction):
 
 
 class DefMeasureCalibration(AbstractInstruction):
-    def __init__(self, qubit, parameter, instrs):
+    def __init__(self, qubit, memory_reference, instrs):
         self.qubit = qubit
-        self.parameter = parameter
+        self.memory_reference = memory_reference
         self.instrs = instrs

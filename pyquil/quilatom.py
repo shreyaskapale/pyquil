@@ -642,3 +642,15 @@ class Waveform(QuilAtom):
     def __init__(self, name, params):
         self.name = name
         self.params = params
+
+    def out(self):
+        ret = "name"
+        if len(self.params) == 0:
+            return ret
+        else:
+            (first_name, first_value), *params = list(self.params.items())
+            ret += f"({first_name}: {first_value}"
+            for (param_name, param_value) in params:
+                ret += f", {param_name}: {param_value}"
+            return ret + ")"
+
