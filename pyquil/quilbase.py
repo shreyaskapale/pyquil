@@ -871,7 +871,7 @@ class Pulse(AbstractInstruction):
         ret = "PULSE "
         for qubit in self.qubits:
             ret += f"{qubit} "
-        ret += f'"{self.frame} {self.waveform.out()}"'
+        ret += f'{self.frame} {self.waveform.out()}'
         return ret
 
 
@@ -881,12 +881,24 @@ class SetFrequency(AbstractInstruction):
         self.frame = frame
         self.freq = freq
 
+    def out(self):
+        ret = "SET-FREQUENCY"
+        for q in self.qubits:
+            ret += f" {q}"
+        return ret + f" {self.frame} {self.freq}"
+
 
 class SetPhase(AbstractInstruction):
     def __init__(self, qubits, frame, phase):
         self.qubits = qubits
         self.frame = frame
         self.phase = phase
+
+    def out(self):
+        ret = "SET-PHASE"
+        for q in self.qubits:
+            ret += f" {q}"
+        return ret + f" {self.frame} {self.phase}"
 
 
 class ShiftPhase(AbstractInstruction):
@@ -909,12 +921,27 @@ class SwapPhases(AbstractInstruction):
         self.frameA = frameA
         self.frameB = frameB
 
+    def out(self):
+        ret = "SWAP-PHASES"
+        for q in self.qubitsA:
+            ret += f" {q}"
+        ret += f" {self.frameA}"
+        for q in self.qubitsB:
+            ret += f" {q}"
+        return ret + f" {self.frameB}"
+
 
 class SetScale(AbstractInstruction):
     def __init__(self, qubits, frame, scale):
         self.qubits = qubits
         self.frame = frame
         self.scale = scale
+
+    def out(self):
+        ret = "SET-SCALE"
+        for q in self.qubits:
+            ret += f" {q}"
+        return ret + f" {self.frame} {self.scale}"
 
 
 class Capture(AbstractInstruction):
@@ -924,6 +951,9 @@ class Capture(AbstractInstruction):
         self.waveform = waveform
         self.memory_region = memory_region
 
+    def out(self):
+        return f"CAPTURE {self.qubit} {self.frame} {self.waveform.out()} {self.memory_region.out()}"
+
 
 class RawCapture(AbstractInstruction):
     def __init__(self, qubit, frame, duration, memory_region):
@@ -932,16 +962,28 @@ class RawCapture(AbstractInstruction):
         self.duration = duration
         self.memory_region = memory_region
 
+    def out(self):
+        return f"CAPTURE {self.qubit} {self.frame} {self.duration} {self.memory_region.out()}"
+
 
 class Delay(AbstractInstruction):
     def __init__(self, qubit, duration):
         self.qubit = qubit
         self.duration = duration
 
+    def out(self):
+        return f"DELAY {self.qubit} {self.duration}"
+
 
 class Fence(AbstractInstruction):
     def __init__(self, qubits):
         self.qubits = qubits
+
+    def out(self):
+        ret = "FENCE"
+        for q in self.qubits:
+            ret += f" {q}"
+        return ret
 
 
 class DefWaveform(AbstractInstruction):
@@ -949,6 +991,21 @@ class DefWaveform(AbstractInstruction):
         self.name = name
         self.parameters = parameters
         self.entries = entries
+
+    def out(self):
+        ret = f"DEFWAVEFORM {self.name}"
+        if len(self.parameters) > 0:
+            first_param, *params = self.parameters
+            ret += f"({first_param}"
+            for param in params:
+                ret += f", {param}"
+            ret += ")"
+        ret += ":\n    "
+        first_entry, *entries = self.entries
+        ret += str(first_entry)
+        for entry in entries:
+            ret += f", {entry}"
+        return ret
 
 
 class DefCalibration(AbstractInstruction):

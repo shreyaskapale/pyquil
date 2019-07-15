@@ -570,6 +570,7 @@ def _named_parameters(params):
         name = param.colonTerminatedName().getText()[:-1]
         expr = _expression(param.expression())
         ret[name] = expr
+    return ret
 
 
 def _binary_exp(expression, op):
@@ -641,4 +642,5 @@ def _sign(real):
 
 def _waveform(wf):
     # type: (QuilParser.WaveformContext) -> Waveform
-    return Waveform(wf.name().getText(), map(_named_parameters, wf.namedParam()))
+    param_dict = _named_parameters(wf.namedParam())
+    return Waveform(wf.name().getText(), param_dict)
