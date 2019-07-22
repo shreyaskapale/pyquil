@@ -643,6 +643,12 @@ class Waveform(QuilAtom):
         self.name = name
         self.params = params
 
+    def __hash__(self):
+        h = hash(self.name)
+        for param in self.params.items():
+            h ^= hash(param)
+        return h
+
     def out(self):
         ret = "name"
         if len(self.params) == 0:
