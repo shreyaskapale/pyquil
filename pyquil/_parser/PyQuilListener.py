@@ -406,52 +406,52 @@ class PyQuilListener(QuilListener):
 
     def exitPulse(self, ctx:QuilParser.PulseContext):
         qubits = list(map(_formal_qubit, ctx.formalQubit()))
-        frame = ctx.frame().getText()
+        frame = ctx.frame().getText()[1:-1]
         waveform = _waveform(ctx.waveform())
         self.result.append(Pulse(qubits, frame, waveform))
 
     def exitSetFrequency(self, ctx:QuilParser.SetFrequencyContext):
         qubits = list(map(_formal_qubit, ctx.formalQubit()))
-        frame = ctx.frame().getText()
+        frame = ctx.frame().getText()[1:-1]
         freq = _expression(ctx.expression())
         self.result.append(SetFrequency(qubits, frame, freq))
 
     def exitSetPhase(self, ctx:QuilParser.SetPhaseContext):
         qubits = list(map(_formal_qubit, ctx.formalQubit()))
-        frame = ctx.frame().getText()
+        frame = ctx.frame().getText()[1:-1]
         phase = _expression(ctx.expression())
         self.result.append(SetPhase(qubits, frame, phase))
 
     def exitShiftPhase(self, ctx:QuilParser.ShiftPhaseContext):
         qubits = list(map(_formal_qubit, ctx.formalQubit()))
-        frame = ctx.frame().getText()
+        frame = ctx.frame().getText()[1:-1]
         phase = _expression(ctx.expression())
         self.result.append(ShiftPhase(qubits, frame, phase))
 
     def exitSwapPhases(self, ctx:QuilParser.SwapPhasesContext):
         all_qubits = list(map(_formal_qubit, ctx.formalQubit()))
         qubit_count = len(all_qubits)
-        frameA = ctx.frame(0).getText()
-        frameB = ctx.frame(1).getText()
+        frameA = ctx.frame(0).getText()[1:-1]
+        frameB = ctx.frame(1).getText()[1:-1]
         self.result.append(SwapPhases(all_qubits[:qubit_count/2], frameA,
                                       all_qubits[qubit_count/2:], frameB))
 
     def exitSetScale(self, ctx:QuilParser.SetScaleContext):
         qubits = list(map(_formal_qubit, ctx.formalQubit()))
-        frame = ctx.frame().getText()
+        frame = ctx.frame().getText()[1:-1]
         scale = _expression(ctx.expression())
         self.result.append(SetScale(qubits, frame, scale))
 
     def exitCapture(self, ctx:QuilParser.CaptureContext):
         qubit = _formal_qubit(ctx.formalQubit())
-        frame = ctx.frame().getText()
+        frame = ctx.frame().getText()[1:-1]
         waveform = _waveform(ctx.waveform())
         memory_region = _addr(ctx.addr())
         self.result.append(Capture(qubit, frame, waveform, memory_region))
 
     def exitRawCapture(self, ctx:QuilParser.RawCaptureContext):
         qubit = _formal_qubit(ctx.formalQubit())
-        frame = ctx.frame().getText()
+        frame = ctx.frame().getText()[1:-1]
         duration = _expression(ctx.expression())
         memory_region = _addr(ctx.addr())
         self.result.append(RawCapture(qubit, frame, duration, memory_region))
