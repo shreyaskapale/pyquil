@@ -11,6 +11,8 @@ Improvements and Changes:
   Also, included an example section for how to get started with running a simple Bell state
   program on the QVM (gh-949).
 
+- Remove the ProtoQuil restrictions built in to PyQVM.
+
 Bugfixes:
 
 - ``unitary_tools.lifted_gate()`` was not properly handling modifiers such as ``DAGGER`` and ``CONTROLLED``.
