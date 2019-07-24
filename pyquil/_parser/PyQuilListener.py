@@ -472,8 +472,8 @@ Helper functions for converting from ANTLR internals to PyQuil objects
 
 
 def _formal_qubit(formal_qubit):
-    if isinstance(formal_qubit, QuilParser.QubitContext):
-        return _qubit(formal_qubit)
+    if isinstance(formal_qubit.qubit(), QuilParser.QubitContext):
+        return _qubit(formal_qubit.qubit())
     else:
         return formal_qubit.getText()
 
