@@ -18,7 +18,7 @@ Improvements and Changes:
 - Updated the examples README. Removed an outdated notebook. Updated remaining notebooks to use
   ``MemoryReference``, and fix any parts that were broken (gh-820).
 
-- Test suite attempts to retry any tests that fail. Tests are retried only a single time.
+- Test suite attempts to retry any tests that fail. Tests are retried only a single time (gh-951).
 
 Bugfixes:
 
