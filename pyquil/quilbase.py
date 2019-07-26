@@ -1038,7 +1038,10 @@ class DefMeasureCalibration(AbstractInstruction):
         self.instrs = instrs
 
     def out(self):
-        ret = f"DEFCAL MEASURE {self.qubit} {self.memory_reference}:\n"
+        ret = f"DEFCAL MEASURE {self.qubit}"
+        if self.memory_reference is not None:
+            ret += f" {self.memory_reference}"
+        ret += ":\n"
         for instr in self.instrs:
             ret += f"    {instr.out()}\n"
         return ret
